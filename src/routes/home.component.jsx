@@ -1,5 +1,6 @@
 import Directory from "../components/directory/directory.component";
 const Home = () => {
+  console.log("context");
   const categories = [
     {
       id: 1,
