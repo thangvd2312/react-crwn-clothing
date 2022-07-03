@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   signInWithGooglePopup,
   signInAuthUserWithEmailAndPassword
@@ -28,6 +28,7 @@ const SignInForm = () => {
         email,
         password
       );
+      console.log(user);
       resetFormFields();
     } catch (error) {
       if (error.code === "auth/wrong-password") {
