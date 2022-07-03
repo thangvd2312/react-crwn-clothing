@@ -7,27 +7,48 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+} from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyB3M-bnZb-XASkmE9-KCh1YOS3WgasNaUY",
   authDomain: "thangvv-crwn-clothing-db.firebaseapp.com",
   projectId: "thangvv-crwn-clothing-db",
   storageBucket: "thangvv-crwn-clothing-db.appspot.com",
   messagingSenderId: "935995016742",
-  appId: "1:935995016742:web:f99976dfe67f9076de48e7"
+  appId: "1:935995016742:web:f99976dfe67f9076de48e7",
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
-  prompt: "select_account"
+  prompt: "select_account",
 });
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, provider);
-export const db = getFirestore(firebaseApp);
+export const db = getFirestore();
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd,
+  field
+) => {
+  const collectionRef = collection(db, collectionKey);
+  const batch = writeBatch(db);
+  objectsToAdd.forEach((obj) => {
+    const docRef = doc(collectionRef, obj.title.toLowerCase());
+    batch.set(docRef);
+  });
+  await batch.commit();
+  console.log("done");
+};
 export const createUserDocumentFromAuth = async (
   userAuth,
   additionalInfomation = { displayName: "thangvv" }
@@ -43,7 +64,7 @@ export const createUserDocumentFromAuth = async (
         displayName,
         email,
         createdAt,
-        ...additionalInfomation
+        ...additionalInfomation,
       });
     } catch (error) {
       console.log("error createing the user ", error.message);
