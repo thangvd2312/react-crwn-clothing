@@ -7,7 +7,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -15,7 +15,9 @@ import {
   getDoc,
   setDoc,
   collection,
-  writeBatch
+  writeBatch,
+  query,
+  getDocs,
 } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyB3M-bnZb-XASkmE9-KCh1YOS3WgasNaUY",
@@ -23,12 +25,12 @@ const firebaseConfig = {
   projectId: "thangvv-crwn-clothing-db",
   storageBucket: "thangvv-crwn-clothing-db.appspot.com",
   messagingSenderId: "935995016742",
-  appId: "1:935995016742:web:f99976dfe67f9076de48e7"
+  appId: "1:935995016742:web:f99976dfe67f9076de48e7",
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({
-  prompt: "select_account"
+  prompt: "select_account",
 });
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
@@ -50,6 +52,18 @@ export const addCollectionAndDocuments = async (
   await batch.commit();
   console.log("done");
 };
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, "categories");
+  const q = query(collectionRef);
+  const querySnapshot = await getDocs(q);
+  const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    acc[title.toLowerCase()] = items;
+    return acc;
+  }, {});
+  return categoryMap;
+};
 export const createUserDocumentFromAuth = async (
   userAuth,
   additionalInfomation = { displayName: "thangvv" }
@@ -65,7 +79,7 @@ export const createUserDocumentFromAuth = async (
         displayName,
         email,
         createdAt,
-        ...additionalInfomation
+        ...additionalInfomation,
       });
     } catch (error) {
       console.log("error createing the user ", error.message);
