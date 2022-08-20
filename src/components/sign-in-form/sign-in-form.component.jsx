@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   signInWithGooglePopup,
-  signInAuthUserWithEmailAndPassword,
 } from "../../utils/firebase/firebase.utils";
 import FromInput from "../form-input/form-input.component";
 import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
@@ -23,10 +22,6 @@ const SignInForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
       resetFormFields();
     } catch (error) {
       if (error.code === "auth/wrong-password") {
