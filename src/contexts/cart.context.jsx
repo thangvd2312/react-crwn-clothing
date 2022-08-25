@@ -33,7 +33,7 @@ const removeCartItem = (cartItems, cartItemRemove) => {
 
 const clearCartItem = (cartItems, cartItemClear) => {
   return cartItems.filter((cartItem) => cartItem.id !== cartItemClear.id);
-}
+};
 
 export const CartContext = createContext({
   isCartOpen: false,
@@ -45,6 +45,33 @@ export const CartContext = createContext({
   clearItemFromCart: () => {},
   cartTotal: 0,
 });
+
+const INITAL_STATE = {
+  isCartOpen: false,
+  cartItems: [],
+  cartCount: 0,
+  cartTotal: 0,
+};
+
+const cartReducer = (state, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case 'ADD_TO_CART':
+      const newCartItem = addCartItem(state.cartItems, payload);
+      return {
+        ...state,
+        cartItems: newCartItem,
+        cartTotal:
+        cartCount:
+      }
+    default:
+      throw new Error(`Unhandle type of ${type} in cartReducer`);
+  }
+};
+
+const AddToCartAction = (itemToAdd) => {
+  dispatch({ type: "ADD_TO_CART", payload: itemToAdd });
+};
 
 export const CartProvider = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
