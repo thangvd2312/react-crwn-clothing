@@ -1,16 +1,17 @@
 import { createContext, useEffect, useReducer } from "react";
 import {
   onAuthStateChangedListener,
-  createUserDocumentFromAuth,
+  createUserDocumentFromAuth
 } from "../utils/firebase/firebase.utils";
+import { createAction } from "../utils/reducer/reducer.utils";
 
 export const UserContext = createContext({
   currentUser: null,
-  setCurrentUser: () => null,
+  setCurrentUser: () => null
 });
 
 export const USER_ACTION_TYPE = {
-  SET_CURRENT_USER: "SET_CURRENT_USER",
+  SET_CURRENT_USER: "SET_CURRENT_USER"
 };
 
 const userReducer = (state, action) => {
@@ -19,7 +20,7 @@ const userReducer = (state, action) => {
     case USER_ACTION_TYPE.SET_CURRENT_USER:
       return {
         ...state,
-        currentUser: payload,
+        currentUser: payload
       };
     default:
       throw new Error(`Unhandle type ${type} in userReducer`);
@@ -27,17 +28,14 @@ const userReducer = (state, action) => {
 };
 
 const INITAL_STATE = {
-  currentUser: null,
+  currentUser: null
 };
 
 export const UserProvider = ({ children }) => {
   const [{ currentUser }, dispatch] = useReducer(userReducer, INITAL_STATE);
   const setCurrentUser = (user) => {
-    dispatch({
-      type: USER_ACTION_TYPE.SET_CURRENT_USER,
-      payload: user
-    })
-  }
+    dispatch(createAction(USER_ACTION_TYPE.SET_CURRENT_USER, user));
+  };
 
   const value = { currentUser, setCurrentUser };
   useEffect(() => {
@@ -51,11 +49,3 @@ export const UserProvider = ({ children }) => {
   }, []);
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
-
-/*
-const userReducer = (state, action) => {
-  return {
-    currentUser: null,
-  }
-}
- */
